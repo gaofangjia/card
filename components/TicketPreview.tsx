@@ -73,8 +73,8 @@ const TicketPreview: React.FC<TicketPreviewProps> = ({ data, onEdit }) => {
       <div 
         id="printable-area"
         ref={printRef}
-        className="w-full bg-white text-black rounded-3xl overflow-hidden shadow-2xl relative border-8 border-gray-100"
-        style={{ aspectRatio: '1.6/1', minHeight: '600px' }}
+        className="w-full bg-white text-black rounded-3xl overflow-hidden shadow-2xl relative border-8 border-gray-100 overflow-x-auto"
+        style={{ aspectRatio: '1.6/1', minHeight: '600px', minWidth: '1000px' }}
       >
         {/* Header / Banner */}
         <div className={`w-full h-32 ${isTrain ? 'bg-gradient-to-r from-blue-700 to-blue-900' : 'bg-gradient-to-r from-sky-600 to-sky-800'} flex items-center justify-between px-10 text-white`}>
@@ -96,22 +96,22 @@ const TicketPreview: React.FC<TicketPreviewProps> = ({ data, onEdit }) => {
         {/* Main Content Body */}
         <div className="p-10 flex flex-col h-[calc(100%-8rem)] justify-between">
             
-            {/* Stations / Cities - MASSIVE TEXT */}
+            {/* Stations / Cities - Adjusted Size */}
             <div className="flex justify-between items-center border-b-4 border-dashed border-gray-300 pb-8">
-                <div className="text-left w-1/3">
+                <div className="text-left w-2/5">
                     <p className="text-gray-500 text-2xl font-bold mb-2">出发 Origin</p>
-                    <h2 className="text-7xl font-black text-gray-900 leading-none break-words">{data.origin || '---'}</h2>
+                    <h2 className="text-5xl font-black text-gray-900 leading-tight break-words">{data.origin || '---'}</h2>
                 </div>
                 
-                <div className="flex flex-col items-center justify-center w-1/3 opacity-30">
+                <div className="flex flex-col items-center justify-center w-1/5 opacity-30">
                      <div className="w-full h-2 bg-gray-900 rounded-full relative">
                         <div className="absolute -right-2 -top-2 w-0 h-0 border-t-8 border-t-transparent border-l-[16px] border-l-gray-900 border-b-8 border-b-transparent"></div>
                      </div>
                 </div>
 
-                <div className="text-right w-1/3">
+                <div className="text-right w-2/5">
                     <p className="text-gray-500 text-2xl font-bold mb-2">到达 Destination</p>
-                    <h2 className="text-7xl font-black text-gray-900 leading-none break-words">{data.destination || '---'}</h2>
+                    <h2 className="text-5xl font-black text-gray-900 leading-tight break-words">{data.destination || '---'}</h2>
                 </div>
             </div>
 
@@ -145,13 +145,15 @@ const TicketPreview: React.FC<TicketPreviewProps> = ({ data, onEdit }) => {
                 </div>
             </div>
 
-            {/* Footer / Extra Info */}
-            <div className="mt-8 bg-yellow-50 border-l-8 border-yellow-400 p-4 rounded-r-xl">
-                 <h3 className="text-xl font-bold text-yellow-800 mb-1">重要提示 Note:</h3>
-                 <p className="text-2xl font-medium text-gray-800">
-                    {data.extraInfo || (isTrain ? '请提前 30 分钟到达车站候车。' : '请提前 2 小时到达机场办理值机。')}
-                 </p>
-            </div>
+            {/* Footer / Extra Info - Only for Trains */}
+            {isTrain && (
+              <div className="mt-8 bg-yellow-50 border-l-8 border-yellow-400 p-4 rounded-r-xl">
+                   <h3 className="text-xl font-bold text-yellow-800 mb-1">重要提示 Note:</h3>
+                   <p className="text-2xl font-medium text-gray-800">
+                      {data.extraInfo || '请提前 30 分钟到达车站候车。'}
+                   </p>
+              </div>
+            )}
 
         </div>
       </div>

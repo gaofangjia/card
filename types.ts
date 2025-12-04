@@ -1,3 +1,4 @@
+
 export enum TransportType {
   TRAIN = 'TRAIN',
   FLIGHT = 'FLIGHT'
@@ -26,3 +27,25 @@ export const INITIAL_TICKET: TicketData = {
   gateOrSeat: '',
   extraInfo: ''
 };
+
+export enum AIProvider {
+  GEMINI_ENV = 'GEMINI_ENV',       // Uses process.env.API_KEY
+  GEMINI_CUSTOM = 'GEMINI_CUSTOM', // User provided Gemini Key
+  OPENAI = 'OPENAI',               // OpenAI Compatible (Ollama, DeepSeek, etc.)
+}
+
+export interface AISettings {
+  provider: AIProvider;
+  apiKey: string;
+  baseUrl: string;
+  model: string;
+}
+
+export const DEFAULT_SETTINGS: AISettings = {
+  provider: AIProvider.GEMINI_ENV,
+  apiKey: '',
+  baseUrl: 'http://localhost:11434/v1',
+  model: 'gemini-2.5-flash'
+};
+
+export const STORAGE_KEY_SETTINGS = 'elder_journey_settings';

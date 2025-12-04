@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { TicketData, TransportType, INITIAL_TICKET } from '../types';
-import { parseTicketText } from '../services/geminiService';
+import { parseTicketText } from '../services/aiService';
 import { Sparkles, Train, Plane, Calendar, Clock, MapPin, User, Armchair, Copy } from 'lucide-react';
 
 interface InputFormProps {
@@ -19,11 +20,16 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit }) => {
   const handleSmartParse = async () => {
     if (!rawText.trim()) return;
     setIsParsing(true);
-    const result = await parseTicketText(rawText);
-    if (result) {
-      setFormData(result);
-    } else {
-      alert("无法识别信息，请手动输入");
+    try {
+        const result = await parseTicketText(rawText);
+        if (result) {
+          setFormData(result);
+        } else {
+          alert("无法识别信息，请确保配置了正确的 API 设置或手动输入。");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("识别出错，请检查网络或设置");
     }
     setIsParsing(false);
   };

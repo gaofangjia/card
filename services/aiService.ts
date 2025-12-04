@@ -5,10 +5,22 @@ import { TicketData, TransportType, AIProvider, AISettings, DEFAULT_SETTINGS, ST
 // Helper to safely get Env Key
 const getEnvApiKey = () => {
   try {
-    return process.env.API_KEY;
+    // Check for standard Node.js process.env
+    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+      return process.env.API_KEY;
+    }
+    
+    // Check for Vite import.meta.env
+    // @ts-ignore
+    if (typeof import.meta !== 'undefined' && import.meta.env) {
+      // @ts-ignore
+      return import.meta.env.VITE_API_KEY || import.meta.env.API_KEY;
+    }
   } catch (e) {
-    return undefined;
+    // Ignore errors in environments where these globals don't exist
+    console.warn("Could not retrieve env API key", e);
   }
+  return undefined;
 };
 
 const getSettings = (): AISettings => {
@@ -36,7 +48,9 @@ const parseWithGemini = async (text: string, settings: AISettings): Promise<Tick
   const apiKey = settings.provider === AIProvider.GEMINI_CUSTOM ? settings.apiKey : getEnvApiKey();
 
   if (!apiKey) {
-    throw new Error("API Key is missing for Gemini. Please check settings.");
+    console.warn("API Key is missing for Gemini. Please check settings.");
+    // Return null instead of throwing to avoid crashing the UI thread
+    return null;
   }
 
   const ai = new GoogleGenAI({ apiKey });
@@ -119,7 +133,6 @@ const parseWithOpenAI = async (text: string, settings: AISettings): Promise<Tick
           { role: 'user', content: prompt }
         ],
         stream: false,
-        // Some models support json_object type, others don't. We try without enforcing response_format for max compatibility with OLLaMA versions.
       })
     });
 
